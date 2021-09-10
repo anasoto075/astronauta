@@ -52,13 +52,13 @@ function setup() {
   trex.addAnimation("collided" , trex_collided)
   trex.scale = 0.7;
   
-  ground = createSprite(width/2,heigth,width,2);
+  ground = createSprite(width/2,height,width,2);
   ground.addImage("ground",groundImage);
   ground.x = ground.width /2;
   
-  gameOver = createSprite(300,100);
+  gameOver = createSprite(width/2,height/2);
   gameOver.addImage("over",gameOverImage);
-  restart = createSprite(300,140);
+  restart = createSprite(width/2,heigth/2+20);
   restart.addImage("start",restartImage);
   
   gameOver.visible=false;
@@ -100,9 +100,10 @@ function draw() {
     }
     
     //jump when the space key is pressed
-    if(keyDown("space")&& trex.y >=120) {
+    if((touches.length>0||keyDown("space"))&& trex.y >=120) {
         trex.velocityY = -13;
-        jumpSound.play();   
+        jumpSound.play();  
+        touches=[]; 
     }
     
     //add gravity
@@ -129,8 +130,9 @@ function draw() {
      gameOver.visible=true;
      restart.visible=true;
    }
-  if (mousePressedOver(restart)){
+  if (touches.length>0||mousePressedOver(restart)){
     reset();
+    touches=[]
   }
  
   //stop trex from falling down
@@ -149,7 +151,7 @@ function reset(){
 }
 function spawnObstacles(){
  if (frameCount % 60 === 0){
-   var obstacle = createSprite(600 ,165,10,40);
+   var obstacle = createSprite(width,height-95,10,40);
    obstacle.velocityX = -(6+score/100);
    
     //generate random obstacles
@@ -177,12 +179,11 @@ function spawnObstacles(){
    //add each obstacle to the group
     obstaclesGroup.add(obstacle);
  }
-}
 
 function spawnClouds() {
   //write code here to spawn the clouds
    if (frameCount % 60 === 0) {
-     cloud = createSprite(600,100,40,10);
+     cloud = createSprite(width+20,height-300,40,10);
     cloud.y = Math.round(random(10,60));
     cloud.addImage(cloudImage);
     cloud.scale =1;
